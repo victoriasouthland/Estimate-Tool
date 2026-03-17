@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estimate Pro — Concrete Polishing</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <!-- PROJECT LIST VIEW -->
+  <div id="view-list" class="view active">
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <span class="brand-mark">EP</span>
+          <div>
+            <div class="brand-name">Estimate Pro</div>
+            <div class="brand-sub">Concrete Polishing</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="newProject()">+ New Estimate</button>
+      </div>
+    </header>
+    <main class="list-main">
+      <div class="list-toolbar">
+        <input type="text" id="search-input" placeholder="Search projects..." class="search-input" oninput="filterProjects()">
+        <div class="list-meta" id="list-meta">Loading...</div>
+      </div>
+      <div id="project-list" class="project-grid"></div>
+    </main>
+  </div>
+
+  <!-- ESTIMATE FORM VIEW -->
+  <div id="view-form" class="view">
+    <header class="app-header">
+      <div class="header-inner">
+        <button class="btn-ghost" onclick="goList()">← All Projects</button>
+        <div class="form-title-block">
+          <span class="header-project-name" id="header-project-name">New Estimate</span>
+          <span class="save-status" id="save-status"></span>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-ghost" onclick="viewDashboard()">Summary →</button>
+          <button class="btn-primary" onclick="saveProject()">Save Project</button>
+        </div>
+      </div>
+    </header>
+    <div class="form-layout">
+      <div class="form-sidebar">
+        <nav class="form-nav">
+          <a class="nav-item active" onclick="navTo('s-info')">Project Info</a>
+          <a class="nav-item" onclick="navTo('s-grade')">Grade & Class</a>
+          <a class="nav-item" onclick="navTo('s-areas')">Areas / Rooms</a>
+          <a class="nav-item" onclick="navTo('s-materials')">Materials</a>
+          <a class="nav-item" onclick="navTo('s-addons')">Add-ons</a>
+          <a class="nav-item" onclick="navTo('s-travel')">Travel & Lodging</a>
+          <a class="nav-item" onclick="navTo('s-pricing')">Markup & Pricing</a>
+        </nav>
+        <div class="sidebar-summary">
+          <div class="ss-row"><span>Total MH</span><strong id="ss-mh">—</strong></div>
+          <div class="ss-row"><span>Mat + Add-ons</span><strong id="ss-mat">—</strong></div>
+          <div class="ss-row accent"><span>Contract Price</span><strong id="ss-price">—</strong></div>
+        </div>
+      </div>
+      <div class="form-body" id="form-body">
+
+        <!-- PROJECT INFO -->
+        <section class="form-section" id="s-info">
+          <div class="section-label">01 — Project Info</div>
+          <div class="field-grid two-col">
+            <div class="field-group" style="grid-column:1/-1">
+              <label>Project Name <span style="color:var(--red)">*</span></label>
+              <input type="text" id="project-name-input" class="project-name-field" placeholder="e.g. Swig Drinks — Alafaya, Orlando" oninput="document.getElementById('header-project-name').textContent=this.value||'New Estimate'">
+            </div>
+            <div class="field-group">
+              <label>Client / Location</label>
+              <input type="text" id="f-client" placeholder="Client name or address">
+            </div>
+            <div class="field-group">
+              <label>Estimator</label>
+              <input type="text" id="f-estimator" placeholder="Your name">
+            </div>
+            <div class="field-group">
+              <label>Date</label>
+              <input type="date" id="f-date">
+            </div>
+            <div class="field-group">
+              <label>Project Notes</label>
+              <input type="text" id="f-notes" placeholder="Any general notes">
+            </div>
+          </div>
+        </section>
+
+        <!-- GRADE & CLASS -->
+        <section class="form-section" id="s-grade">
+          <div class="section-label">02 — Grade & Class of Shine</div>
+          <div class="field-grid two-col">
+            <div class="field-group">
+              <label>Grade</label>
+              <select id="f-grade" onchange="recalc()">
+                <option>Grade 1</option>
+                <option selected>Grade 2</option>
+                <option>Grade 3</option>
+              </select>
+              <span class="field-hint">Grade 1 = Highest shine · Grade 3 = Basic</span>
+            </div>
+            <div class="field-group">
+              <label>Class of Shine</label>
+              <select id="f-class" onchange="recalc()">
+                <option selected>Class 1</option>
+                <option>Class 2</option>
+                <option>Class 3</option>
+              </select>
+              <span class="field-hint">Class 1 = Low gloss · Class 3 = High gloss</span>
+            </div>
+          </div>
+          <div class="calc-row" id="grade-calc-row">
+            <div class="calc-chip"><span>SF/MH Rate</span><strong id="calc-sfmh">—</strong></div>
+            <div class="calc-chip"><span>Edge Grind LF/MH</span><strong id="calc-lfmh">—</strong></div>
+            <div class="calc-chip"><span>Class Adjustment</span><strong id="calc-classadj">—</strong></div>
+          </div>
+        </section>
+
+        <!-- AREAS / ROOMS -->
+        <section class="form-section" id="s-areas">
+          <div class="section-label">03 — Areas / Rooms</div>
+          <div class="areas-table-wrap">
+            <table class="areas-table">
+              <thead>
+                <tr>
+                  <th style="width:100px">Area / Room</th>
+                  <th>SF</th>
+                  <th>LF (Edging)</th>
+                  <th>SF/MH Rate</th>
+                  <th>MH Calculated</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="areas-tbody"></tbody>
+              <tfoot>
+                <tr class="totals-row">
+                  <td>Totals</td>
+                  <td id="tot-sf">—</td>
+                  <td id="tot-lf">—</td>
+                  <td>—</td>
+                  <td id="tot-mh">—</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </section>
+
+        <!-- STANDARD MATERIALS -->
+        <section class="form-section" id="s-materials">
+          <div class="section-label">04 — Standard Materials</div>
+          <div class="toggle-table">
+            <div class="toggle-row header-row">
+              <span>Material</span><span>Include?</span><span>Qty (auto)</span><span>Cost (auto)</span>
+            </div>
+            <div id="materials-rows"></div>
+            <div class="toggle-total-row">
+              <span>Materials Total</span><span></span><span></span><span id="mat-total">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADD-ONS -->
+        <section class="form-section" id="s-addons">
+          <div class="section-label">05 — Add-On Services</div>
+          <div class="toggle-table">
+            <div class="toggle-row header-row">
+              <span>Service</span><span>Include?</span><span>SF or LF</span><span>Cost (auto)</span>
+            </div>
+            <div id="addons-rows"></div>
+            <div class="toggle-total-row">
+              <span>Add-ons Total</span><span></span><span></span><span id="addon-total">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- TRAVEL -->
+        <section class="form-section" id="s-travel">
+          <div class="section-label">06 — Travel & Lodging</div>
+          <div class="field-grid three-col">
+            <div class="field-group">
+              <label>Est. Days of Work</label>
+              <input type="number" id="f-days" value="" min="1" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label>Est. # of Men</label>
+              <input type="number" id="f-men" value="" min="1" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label># of Trips (round trip)</label>
+              <input type="number" id="f-trips" value="" min="1" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label>Miles Round Trip</label>
+              <input type="number" id="f-miles" value="" min="0" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label># of Vehicles</label>
+              <input type="number" id="f-vehicles" value="" min="1" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label>Hotel Nights</label>
+              <input type="number" id="f-hotel-nights" value="" min="0" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label># of Rooms</label>
+              <input type="number" id="f-rooms" value="" min="1" oninput="recalc()">
+            </div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-chip"><span>Travel MH</span><strong id="calc-travel-mh">—</strong></div>
+            <div class="calc-chip"><span>Fuel Cost</span><strong id="calc-fuel">—</strong></div>
+            <div class="calc-chip"><span>Hotel Cost</span><strong id="calc-hotel">—</strong></div>
+            <div class="calc-chip"><span>Per Diem</span><strong id="calc-perdiem">—</strong></div>
+            <div class="calc-chip accent"><span>Travel Total</span><strong id="calc-travel-total">—</strong></div>
+          </div>
+        </section>
+
+        <!-- MARKUP & PRICING -->
+        <section class="form-section" id="s-pricing">
+          <div class="section-label">07 — Markup & Final Pricing</div>
+          <div class="field-grid three-col">
+            <div class="field-group">
+              <label>Labor Rate ($/MH w/ burden)</label>
+              <input type="number" id="f-labor-rate" value="37.97" step="0.01" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label>Labor Markup Multiplier</label>
+              <input type="number" id="f-labor-markup" value="2.5" step="0.1" oninput="recalc()">
+            </div>
+            <div class="field-group">
+              <label>Material Markup Multiplier</label>
+              <input type="number" id="f-mat-markup" value="1.2" step="0.1" oninput="recalc()">
+            </div>
+          </div>
+          <div class="pricing-summary">
+            <div class="ps-row"><span>Total Man-Hours</span><span id="ps-mh">—</span></div>
+            <div class="ps-row"><span>Materials Cost</span><span id="ps-mat">—</span></div>
+            <div class="ps-row"><span>Add-ons Cost</span><span id="ps-addons">—</span></div>
+            <div class="ps-row"><span>Travel & Lodging</span><span id="ps-travel">—</span></div>
+            <div class="ps-row"><span>Labor Cost (raw)</span><span id="ps-labor">—</span></div>
+            <div class="ps-row subtotal"><span>Subtotal (before markup)</span><span id="ps-subtotal">—</span></div>
+            <div class="ps-row"><span>Labor (with markup)</span><span id="ps-labor-marked">—</span></div>
+            <div class="ps-row"><span>Materials (with markup)</span><span id="ps-mat-marked">—</span></div>
+            <div class="ps-row contract"><span>CONTRACT PRICE</span><span id="ps-contract">—</span></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="view-dashboard" class="view">
+    <header class="app-header">
+      <div class="header-inner">
+        <div style="display:flex;gap:8px">
+          <button class="btn-ghost" onclick="goList()">← All Projects</button>
+          <button class="btn-ghost" onclick="showView('form')">← Edit Estimate</button>
+        </div>
+        <div class="brand-name" id="dash-title">Estimate Summary</div>
+        <button class="btn-primary" onclick="downloadExcel()">↓ Download</button>
+      </div>
+    </header>
+    <div class="dash-body" id="dash-body"></div>
+  </div>
+</div>
+
+<script src="rates.js"></script>
+<script src="calc.js"></script>
+<script src="sheets.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
