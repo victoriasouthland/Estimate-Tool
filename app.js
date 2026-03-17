@@ -495,6 +495,7 @@ function buildMaterialRows() {
         <span class="toggle-slider"></span>
       </label>
       <span class="rate-label" id="mat-rate-${m.key}">${matRateLabels[m.key]||''}</span>
+      <span class="breakdown-val" id="mat-breakdown-${m.key}">—</span>
       <span class="cost-val" id="mat-qty-${m.key}">—</span>
       <span class="cost-val" id="mat-cost-${m.key}">—</span>
     </div>`).join('');
@@ -509,6 +510,7 @@ function buildAddonRows() {
         <span class="toggle-slider"></span>
       </label>
       <span class="rate-label">$${a.rate}/${a.unit}</span>
+      <span class="breakdown-val" id="addon-breakdown-${a.key}">—</span>
       <input type="number" class="qty-input" id="addon-qty-${a.key}" placeholder="${a.unit}" min="0" oninput="recalc()">
       <span class="cost-val" id="addon-cost-${a.key}">—</span>
     </div>`).join('');
