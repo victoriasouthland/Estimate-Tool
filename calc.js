@@ -36,20 +36,7 @@ function recalc() {
   const adj = RATES.classAdj[cls];
   document.getElementById('calc-classadj').textContent = (adj >= 0 ? '+' : '') + adj + ' SF/MH';
 
-  // Update material rate labels based on current grade
-  const gradeRates = {
-    densifier: `${gr.densifierSFperGal} SF/gal`,
-    sr2Sealer: `${gr.sr2SFperGal} SF/gal`,
-    guard:     `78 SF/gal`,
-    grinder:   `$${gr.grinderPerSF}/SF`,
-    edging:    `$${gr.edgingPerLF}/LF`,
-    genFuel:   `$${gr.fuelPerSF}/SF`,
-    misc:      `$0.03/SF + $20`,
-  };
-  for (const [key, label] of Object.entries(gradeRates)) {
-    const el = document.getElementById(`mat-rate-${key}`);
-    if (el) el.textContent = label;
-  }
+  // ── Materials ──────────────────────────────────────────
   let matTotal = 0;
   for (const m of RATES.materials) {
     const on = document.getElementById(`mat-on-${m.key}`)?.checked;
@@ -76,11 +63,6 @@ function recalc() {
     addonTotal += cost;
     const el = document.getElementById(`addon-cost-${a.key}`);
     if (el) el.textContent = on && qty>0 ? fmt$(cost) : '—';
-    const bdEl = document.getElementById(`addon-breakdown-${a.key}`);
-    if (bdEl) {
-      bdEl.textContent = on && qty>0 ? `${qty.toLocaleString()} ${a.unit} × $${a.rate}/${a.unit}` : '—';
-      bdEl.className = 'breakdown-val' + (on && qty>0 ? ' has-value' : '');
-    }
     const row = document.getElementById(`addon-row-${a.key}`);
     if (row) row.className = 'toggle-row' + (on ? ' active-row' : '');
   }
@@ -142,31 +124,22 @@ function recalc() {
 }
 
 function setMatCost(key, cost) {
-  const qtyEl      = document.getElementById(`mat-qty-${key}`);
-  const costEl     = document.getElementById(`mat-cost-${key}`);
-  const breakdownEl= document.getElementById(`mat-breakdown-${key}`);
+  const qtyEl  = document.getElementById(`mat-qty-${key}`);
+  const costEl = document.getElementById(`mat-cost-${key}`);
   if (costEl) costEl.textContent = cost > 0 ? fmt$(cost) : '—';
-
-  const grade   = document.getElementById('f-grade').value;
-  const gr      = RATES.grade[grade];
-  const totalSF = [...document.querySelectorAll('[id^="area-sf-"]')].reduce((s,e)=>s+(parseFloat(e.value)||0),0);
-  const totalLF = [...document.querySelectorAll('[id^="area-lf-"]')].reduce((s,e)=>s+(parseFloat(e.value)||0),0);
-
-  let qty = 0, breakdown = '—';
-  if (cost > 0) {
-    if (key==='densifier')  { qty=(totalSF/gr.densifierSFperGal); breakdown=`${totalSF.toLocaleString()} SF ÷ ${gr.densifierSFperGal} SF/gal`; }
-    if (key==='sr2Sealer')  { qty=(totalSF/gr.sr2SFperGal);       breakdown=`${totalSF.toLocaleString()} SF ÷ ${gr.sr2SFperGal} SF/gal`; }
-    if (key==='guard')      { qty=(totalSF/78);                    breakdown=`${totalSF.toLocaleString()} SF ÷ 78 SF/gal`; }
-    if (key==='grinder')    { breakdown=`${totalSF.toLocaleString()} SF × $${gr.grinderPerSF}/SF`; }
-    if (key==='edging')     { breakdown=`${totalLF.toLocaleString()} LF × $${gr.edgingPerLF}/LF`; }
-    if (key==='genFuel')    { breakdown=`${totalSF.toLocaleString()} SF × $${gr.fuelPerSF}/SF`; }
-    if (key==='misc')       { breakdown=`${totalSF.toLocaleString()} SF × $0.03 + $20`; }
-  }
-
-  if (qtyEl) qtyEl.textContent = qty > 0 ? qty.toFixed(2)+' gal' : (cost > 0 ? '—' : '—');
-  if (breakdownEl) {
-    breakdownEl.textContent = breakdown;
-    breakdownEl.className = 'breakdown-val' + (cost > 0 ? ' has-value' : '');
+  // qty display
+  if (qtyEl && cost > 0) {
+    const grade = document.getElementById('f-grade').value;
+    const gr = RATES.grade[grade];
+    const totalSF = [...document.querySelectorAll('[id^="area-sf-"]')].reduce((s,e)=>s+(parseFloat(e.value)||0),0);
+    const totalLF = [...document.querySelectorAll('[id^="area-lf-"]')].reduce((s,e)=>s+(parseFloat(e.value)||0),0);
+    let qty = '';
+    if (key==='densifier')  qty = (totalSF/gr.densifierSFperGal).toFixed(2)+' gal';
+    if (key==='sr2Sealer')  qty = (totalSF/gr.sr2SFperGal).toFixed(2)+' gal';
+    if (key==='guard')      qty = (totalSF/78).toFixed(2)+' gal';
+    qtyEl.textContent = qty;
+  } else if (qtyEl) {
+    qtyEl.textContent = '—';
   }
 }
 

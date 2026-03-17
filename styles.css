@@ -35,8 +35,8 @@ body {
 }
 
 /* ── VIEWS ── */
-.view { display: none; min-height: 100vh; background: var(--off); }
-.view.active { display: flex; flex-direction: column; }
+.view { display: none; min-height: 100vh; }
+.view.active { display: block; }
 
 /* ── HEADER ── */
 .app-header {
@@ -135,7 +135,7 @@ body {
 .empty-state p { font-size: 14px; margin-bottom: 24px; }
 
 /* ── FORM LAYOUT ── */
-.form-layout { display: flex; flex: 1; max-width: 100%; min-height: calc(100vh - 60px); background: var(--off); }
+.form-layout { display: flex; max-width: 1400px; margin: 0 auto; min-height: calc(100vh - 60px); }
 .form-sidebar {
   width: 220px; flex-shrink: 0;
   background: white; border-right: 1px solid var(--border);
@@ -166,7 +166,7 @@ body {
 .ss-row strong { font-size: 13px; font-weight: 600; color: var(--text); }
 .ss-row.accent strong { color: var(--green); font-size: 15px; }
 
-.form-body { flex: 1; padding: 24px 32px; overflow-y: auto; max-width: 1180px; }
+.form-body { flex: 1; padding: 24px 32px; overflow-y: auto; }
 .form-section {
   background: white; border-radius: var(--radius);
   border: 1px solid var(--border); box-shadow: var(--shadow);
@@ -205,7 +205,6 @@ body {
   display: flex; flex-direction: column; gap: 3px;
 }
 .calc-chip span { font-size: 11px; color: var(--text-soft); }
-.chip-rate { font-size: 10px !important; color: var(--text-soft) !important; font-family: 'DM Mono', monospace; margin-top: 2px; }
 .calc-chip strong { font-size: 15px; color: var(--navy); font-family: 'DM Mono', monospace; }
 .calc-chip.accent { background: var(--green-light); }
 .calc-chip.accent strong { color: var(--green); }
@@ -238,17 +237,17 @@ body {
 /* ── TOGGLE TABLE ── */
 .toggle-table { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .toggle-row {
-  display: grid; grid-template-columns: minmax(0,2fr) 60px 110px minmax(0,1.2fr) 90px 110px;
+  display: grid; grid-template-columns: 2fr 120px 120px 130px;
   align-items: center; padding: 10px 16px;
   border-bottom: 1px solid var(--border);
-  gap: 10px;
+  gap: 12px;
 }
 .toggle-row:last-child { border-bottom: none; }
 .header-row {
   background: var(--off); font-size: 11px; font-weight: 600;
   text-transform: uppercase; letter-spacing: .04em; color: var(--text-soft);
 }
-.toggle-row span:not(.pill):not(.rate-label):not(.breakdown-val):not(.cost-val) { font-size: 13px; }
+.toggle-row span:not(.pill) { font-size: 13px; }
 .toggle-row .qty-input {
   border: 1px solid var(--border); border-radius: 6px;
   padding: 6px 8px; width: 100%; font-family: 'DM Sans',sans-serif;
@@ -257,26 +256,17 @@ body {
 .toggle-row .qty-input:focus { outline: none; border-color: var(--steel); background: white; }
 .toggle-row .cost-val { font-family: 'DM Mono',monospace; font-size: 13px; color: var(--text-mid); }
 .toggle-row.active-row .cost-val { color: var(--navy); font-weight: 500; }
-.breakdown-val {
-  font-size: 11px; color: var(--text-soft); font-family: 'DM Mono', monospace;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.breakdown-val.has-value { color: var(--steel); }
 .toggle-total-row {
-  display: grid; grid-template-columns: minmax(0,2fr) 60px 110px minmax(0,1.2fr) 90px 110px;
+  display: grid; grid-template-columns: 2fr 120px 120px 130px;
   align-items: center; padding: 12px 16px;
-  background: var(--navy); gap: 10px;
+  background: var(--navy); gap: 12px;
 }
 .toggle-total-row span { color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 600; }
 .toggle-total-row span:first-child { color: white; font-size: 13px; }
 .toggle-total-row span:last-child { color: white; font-size: 15px; font-weight: 700; font-family: 'DM Mono',monospace; }
 
 /* Toggle switch */
-.rate-label {
-  font-size: 11px; color: var(--text-soft); font-family: 'DM Mono', monospace;
-  background: var(--off); border-radius: 5px; padding: 3px 7px;
-  border: 1px solid var(--border); white-space: nowrap;
-}
+.toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; }
 .toggle-switch input { opacity: 0; width: 0; height: 0; }
 .toggle-slider {
   position: absolute; cursor: pointer; inset: 0;

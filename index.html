@@ -133,7 +133,7 @@
                   <th style="width:100px">Area / Room</th>
                   <th>SF</th>
                   <th>LF (Edging)</th>
-                  <th>SF/MH Rate <span style="font-weight:400;opacity:.6">(by grade)</span></th>
+                  <th>SF/MH Rate</th>
                   <th>MH Calculated</th>
                   <th>Notes</th>
                 </tr>
@@ -157,12 +157,12 @@
         <section class="form-section" id="s-materials">
           <div class="section-label">04 — Standard Materials</div>
           <div class="toggle-table">
-            <div class="toggle-row mat-row header-row">
-              <span>Material</span><span>Include?</span><span>Rate</span><span>Breakdown</span><span>Qty</span><span>Cost</span>
+            <div class="toggle-row header-row">
+              <span>Material</span><span>Include?</span><span>Qty (auto)</span><span>Cost (auto)</span>
             </div>
             <div id="materials-rows"></div>
-            <div class="toggle-total-row mat-total-row">
-              <span>Materials Total</span><span></span><span></span><span></span><span></span><span id="mat-total">—</span>
+            <div class="toggle-total-row">
+              <span>Materials Total</span><span></span><span></span><span id="mat-total">—</span>
             </div>
           </div>
         </section>
@@ -171,12 +171,12 @@
         <section class="form-section" id="s-addons">
           <div class="section-label">05 — Add-On Services</div>
           <div class="toggle-table">
-            <div class="toggle-row addon-row header-row">
-              <span>Service</span><span>Include?</span><span>Rate</span><span>Breakdown</span><span>SF or LF</span><span>Cost</span>
+            <div class="toggle-row header-row">
+              <span>Service</span><span>Include?</span><span>SF or LF</span><span>Cost (auto)</span>
             </div>
             <div id="addons-rows"></div>
-            <div class="toggle-total-row addon-total-row">
-              <span>Add-ons Total</span><span></span><span></span><span></span><span></span><span id="addon-total">—</span>
+            <div class="toggle-total-row">
+              <span>Add-ons Total</span><span></span><span></span><span id="addon-total">—</span>
             </div>
           </div>
         </section>
@@ -215,10 +215,10 @@
             </div>
           </div>
           <div class="calc-row">
-            <div class="calc-chip"><span>Travel MH</span><strong id="calc-travel-mh">—</strong><span class="chip-rate">@ 50 mi/hr</span></div>
-            <div class="calc-chip"><span>Fuel Cost</span><strong id="calc-fuel">—</strong><span class="chip-rate">@ $0.40/mi</span></div>
-            <div class="calc-chip"><span>Hotel Cost</span><strong id="calc-hotel">—</strong><span class="chip-rate">@ $175/night</span></div>
-            <div class="calc-chip"><span>Per Diem</span><strong id="calc-perdiem">—</strong><span class="chip-rate">@ $25/man/day</span></div>
+            <div class="calc-chip"><span>Travel MH</span><strong id="calc-travel-mh">—</strong></div>
+            <div class="calc-chip"><span>Fuel Cost</span><strong id="calc-fuel">—</strong></div>
+            <div class="calc-chip"><span>Hotel Cost</span><strong id="calc-hotel">—</strong></div>
+            <div class="calc-chip"><span>Per Diem</span><strong id="calc-perdiem">—</strong></div>
             <div class="calc-chip accent"><span>Travel Total</span><strong id="calc-travel-total">—</strong></div>
           </div>
         </section>
