@@ -36,7 +36,20 @@ function recalc() {
   const adj = RATES.classAdj[cls];
   document.getElementById('calc-classadj').textContent = (adj >= 0 ? '+' : '') + adj + ' SF/MH';
 
-  // ── Materials ──────────────────────────────────────────
+  // Update material rate labels based on current grade
+  const gradeRates = {
+    densifier: `${gr.densifierSFperGal} SF/gal`,
+    sr2Sealer: `${gr.sr2SFperGal} SF/gal`,
+    guard:     `78 SF/gal`,
+    grinder:   `$${gr.grinderPerSF}/SF`,
+    edging:    `$${gr.edgingPerLF}/LF`,
+    genFuel:   `$${gr.fuelPerSF}/SF`,
+    misc:      `$0.03/SF + $20`,
+  };
+  for (const [key, label] of Object.entries(gradeRates)) {
+    const el = document.getElementById(`mat-rate-${key}`);
+    if (el) el.textContent = label;
+  }
   let matTotal = 0;
   for (const m of RATES.materials) {
     const on = document.getElementById(`mat-on-${m.key}`)?.checked;

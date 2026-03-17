@@ -478,6 +478,15 @@ function buildAreaRows() {
 }
 
 function buildMaterialRows() {
+  const matRateLabels = {
+    densifier:  'SF/gal by grade',
+    sr2Sealer:  'SF/gal by grade',
+    guard:      '78 SF/gal',
+    grinder:    '$/SF by grade',
+    edging:     '$/LF by grade',
+    genFuel:    '$/SF by grade',
+    misc:       '$0.03/SF + $20',
+  };
   document.getElementById('materials-rows').innerHTML = RATES.materials.map(m => `
     <div class="toggle-row" id="mat-row-${m.key}">
       <span>${m.label}</span>
@@ -485,6 +494,7 @@ function buildMaterialRows() {
         <input type="checkbox" id="mat-on-${m.key}" onchange="recalc()">
         <span class="toggle-slider"></span>
       </label>
+      <span class="rate-label" id="mat-rate-${m.key}">${matRateLabels[m.key]||''}</span>
       <span class="cost-val" id="mat-qty-${m.key}">—</span>
       <span class="cost-val" id="mat-cost-${m.key}">—</span>
     </div>`).join('');
@@ -493,11 +503,12 @@ function buildMaterialRows() {
 function buildAddonRows() {
   document.getElementById('addons-rows').innerHTML = RATES.addons.map(a => `
     <div class="toggle-row" id="addon-row-${a.key}">
-      <span>${a.label} <small style="color:var(--text-soft)">(${a.unit})</small></span>
+      <span>${a.label}</span>
       <label class="toggle-switch">
         <input type="checkbox" id="addon-on-${a.key}" onchange="recalc()">
         <span class="toggle-slider"></span>
       </label>
+      <span class="rate-label">$${a.rate}/${a.unit}</span>
       <input type="number" class="qty-input" id="addon-qty-${a.key}" placeholder="${a.unit}" min="0" oninput="recalc()">
       <span class="cost-val" id="addon-cost-${a.key}">—</span>
     </div>`).join('');
